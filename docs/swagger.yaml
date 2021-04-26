@@ -1,0 +1,282 @@
+definitions:
+  dto.Image:
+    properties:
+      id:
+        type: integer
+      image:
+        type: string
+      productId:
+        type: integer
+    type: object
+  dto.Product:
+    properties:
+      address:
+        type: string
+      cod:
+        type: boolean
+      delivery:
+        type: boolean
+      delivery_cost:
+        type: integer
+      detail:
+        type: string
+      id:
+        type: integer
+      images:
+        items:
+          $ref: '#/definitions/dto.Image'
+        type: array
+      index:
+        type: integer
+      isactive:
+        type: boolean
+      isclosed:
+        type: boolean
+      istimeclosed:
+        type: string
+      istimeopen:
+        type: string
+      lat:
+        type: number
+      long:
+        type: number
+      price:
+        type: integer
+      satuan:
+        type: string
+      stocks:
+        type: integer
+      typeId:
+        type: integer
+      userId:
+        type: integer
+    type: object
+  dto.User:
+    properties:
+      address:
+        type: string
+      brandname:
+        type: string
+      created_at:
+        type: string
+      created_by:
+        type: string
+      description:
+        type: string
+      email:
+        type: string
+      id:
+        type: integer
+      lat:
+        type: string
+      long:
+        type: string
+      notif:
+        type: string
+      phone:
+        type: string
+      products:
+        items:
+          $ref: '#/definitions/dto.Product'
+        type: array
+      roleId:
+        type: integer
+      updated_at:
+        type: string
+      updated_by:
+        type: string
+    type: object
+  dto.UserAuth:
+    properties:
+      password:
+        type: string
+      phone:
+        type: string
+    type: object
+  wrapper.Wrapper:
+    properties:
+      code:
+        type: string
+      data:
+        type: object
+      message:
+        type: string
+      serverTime:
+        type: integer
+    type: object
+host: 0.0.0.0:8080
+info:
+  contact:
+    email: dataplatform@tiket.com
+    name: Data Platform
+  description: This API is used to serve DMS Front End
+  title: DMS Core Module API
+  version: 0.0.1
+paths:
+  /api/auth:
+    post:
+      consumes:
+      - application/json
+      description: API will try to validate user credential and return token that
+        can be used for calling other methods.
+      parameters:
+      - description: user credential
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UserAuth'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.UserAuth'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/wrapper.Wrapper'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/wrapper.Wrapper'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/wrapper.Wrapper'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/wrapper.Wrapper'
+      summary: Authenticate user
+      tags:
+      - Authentication
+  /api/seller/detail:
+    get:
+      description: Api will get user details by token.
+      parameters:
+      - description: Bearer + [token]
+        in: header
+        name: Authorization
+        type: string
+      - description: user
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/dto.User'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/wrapper.Wrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/wrapper.Wrapper'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/wrapper.Wrapper'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/wrapper.Wrapper'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/wrapper.Wrapper'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/wrapper.Wrapper'
+      summary: Create a new user
+      tags:
+      - User
+  /seller/product:
+    post:
+      consumes:
+      - application/json
+      description: User can create products by this REST
+      parameters:
+      - description: create
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/dto.Product'
+      - description: Bearer + [token]
+        in: header
+        name: Authorization
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.Product'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/wrapper.Wrapper'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/wrapper.Wrapper'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/wrapper.Wrapper'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/wrapper.Wrapper'
+      summary: Seller create product
+      tags:
+      - Products
+  /seller/type:
+    get:
+      description: Api will get type of products
+      parameters:
+      - description: Bearer + [token]
+        in: header
+        name: Authorization
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/wrapper.Wrapper'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/wrapper.Wrapper'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/wrapper.Wrapper'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/wrapper.Wrapper'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/wrapper.Wrapper'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/wrapper.Wrapper'
+      summary: Get type for products
+      tags:
+      - Products
+schemes:
+- http
+- https
+swagger: "2.0"
